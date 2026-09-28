@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Hilos;
 use App\Filament\Admin\Resources\Hilos\Pages\CreateHilo;
 use App\Filament\Admin\Resources\Hilos\Pages\ListHilos;
 use App\Filament\Admin\Resources\Hilos\Pages\ViewHilo;
+use App\Models\Cliente;
 use App\Models\Hilo;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -43,7 +44,7 @@ class HiloResource extends Resource
         return $schema->components([
             Select::make('cliente_id')
                 ->label('Cliente')
-                ->relationship('cliente.user', 'name')
+                ->options(fn (): array => Cliente::opcionesParaSelector())
                 ->searchable()
                 ->preload()
                 ->required(),

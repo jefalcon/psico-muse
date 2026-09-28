@@ -38,6 +38,35 @@ class Cliente extends Model
         return $this->user?->email ?? '—';
     }
 
+    /** Etiqueta "Nombre (email)" para los selectores de cliente. */
+    public function etiquetaSelector(): string
+    {
+        $usuario = $this->user;
+
+        if (! $usuario) {
+            return "Cliente #{$this->id}";
+        }
+
+        return "{$usuario->name} ({$usuario->email})";
+    }
+
+    /**
+     * Opciones id de cliente => etiqueta, solo clientes (nunca usuarios
+     * sueltos como la admin) y con el id de cliente como valor.
+     *
+     * @return array<int, string>
+     */
+    public static function opcionesParaSelector(): array
+    {
+        return static::query()
+            ->with('user')
+            ->whereHas('user')
+            ->get()
+            ->sortBy(fn (Cliente $cliente) => (string) $cliente->user?->name)
+            ->mapWithKeys(fn (Cliente $cliente) => [$cliente->id => $cliente->etiquetaSelector()])
+            ->all();
+    }
+
     /** @return HasMany<Lead, $this> */
     public function leadsConvertidos(): HasMany
     {

@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\Historial\Pages\CreateEntradaHistorial;
 use App\Filament\Admin\Resources\Historial\Pages\EditEntradaHistorial;
 use App\Filament\Admin\Resources\Historial\Pages\ListEntradasHistorial;
 use App\Filament\Admin\Resources\Historial\Pages\ViewEntradaHistorial;
+use App\Models\Cliente;
 use App\Models\EntradaHistorial;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
@@ -50,7 +51,7 @@ class EntradaHistorialResource extends Resource
         return $schema->components([
             Select::make('cliente_id')
                 ->label('Cliente')
-                ->relationship('cliente.user', 'name')
+                ->options(fn (): array => Cliente::opcionesParaSelector())
                 ->searchable()
                 ->preload()
                 ->required(),
@@ -128,7 +129,7 @@ class EntradaHistorialResource extends Resource
             ->filters([
                 SelectFilter::make('cliente_id')
                     ->label('Cliente')
-                    ->relationship('cliente.user', 'name')
+                    ->options(fn (): array => Cliente::opcionesParaSelector())
                     ->searchable()
                     ->preload(),
             ])

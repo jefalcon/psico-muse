@@ -7,6 +7,7 @@ use App\Filament\Admin\Resources\Citas\Pages\EditCita;
 use App\Filament\Admin\Resources\Citas\Pages\ListCitas;
 use App\Filament\Admin\Resources\Citas\Pages\ViewCita;
 use App\Models\Cita;
+use App\Models\Cliente;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -45,7 +46,7 @@ class CitaResource extends Resource
         return $schema->components([
             Select::make('cliente_id')
                 ->label('Cliente')
-                ->relationship('cliente.user', 'name')
+                ->options(fn (): array => Cliente::opcionesParaSelector())
                 ->searchable()
                 ->preload()
                 ->required(),
