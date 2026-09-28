@@ -11,7 +11,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // `php artisan serve` filtra las variables de entorno que hereda el
+        // servidor. Estas dos solo existen en instalaciones PHP portables
+        // (configuradas por variables) y no tienen ningún efecto cuando no
+        // están definidas.
+        if (class_exists(\Illuminate\Foundation\Console\ServeCommand::class)) {
+            foreach (['PHPRC', 'LD_LIBRARY_PATH'] as $variable) {
+                if (! in_array($variable, \Illuminate\Foundation\Console\ServeCommand::$passthroughVariables, true)) {
+                    \Illuminate\Foundation\Console\ServeCommand::$passthroughVariables[] = $variable;
+                }
+            }
+        }
     }
 
     /**
