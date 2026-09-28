@@ -229,4 +229,40 @@ class CorreccionesAuditoriaTest extends TestCase
 
         $this->get('/portal/inicio')->assertOk()->assertDontSee('ui-avatars.com', false);
     }
+
+    // Defecto 3: sin traducciones al español aparecen claves como
+    // validation.required, validation.email, passwords.sent o passwords.reset.
+    public function test_errores_y_avisos_en_espanol(): void
+    {
+        $respuesta = $this->post('/contacto', ['email' => 'no-es-email']);
+        $respuesta->assertSessionHasErrors(['nombre', 'email', 'mensaje']);
+
+        $errores = session('errors');
+        foreach (['nombre', 'email', 'mensaje'] as $campo) {
+            $mensaje = (string) $errores->first($campo);
+            $this->assertStringNotContainsString('validation.', $mensaje, "Error de {$campo} sin traducir: {$mensaje}.");
+        }
+
+        $this->assertNotSame('passwords.sent', __('passwords.sent'));
+        $this->assertNotSame('passwords.reset', __('passwords.reset'));
+    }
+
+    // Defecto 3: el email de restablecer contraseña debe tener asunto y
+    // cuerpo en español.
+    public function test_email_de_restablecer_contrasena_en_espanol(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+        $usuario = User::where('email', 'cliente1@demo.test')->firstOrFail();
+
+        $notificacion = new \Filament\Auth\Notifications\ResetPassword('token-de-prueba');
+        $notificacion->url = 'http://localhost/portal/password-reset/reset?token=token-de-prueba';
+        $correo = $notificacion->toMail($usuario);
+
+        $this->assertStringNotContainsString('Reset your password', $correo->subject);
+        $this->assertStringContainsStringIgnoringCase('contraseña', $correo->subject);
+
+        $cuerpo = implode("\n", [...$correo->introLines, ...$correo->outroLines]);
+        $this->assertStringNotContainsString('You are receiving this email', $cuerpo);
+        $this->assertStringContainsStringIgnoringCase('contraseña', $cuerpo);
+    }
 }
