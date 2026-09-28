@@ -28,7 +28,7 @@ class EditCliente extends EditRecord
 
         if ($user && User::where('email', $data['email'])->where('id', '!=', $user->id)->exists()) {
             throw ValidationException::withMessages([
-                'email' => 'Ya existe otro usuario con ese email.',
+                'data.email' => 'Ya existe otro usuario con ese email.',
             ]);
         }
 

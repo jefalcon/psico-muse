@@ -19,7 +19,7 @@ class CreateCliente extends CreateRecord
     {
         if (User::where('email', $data['email'])->exists()) {
             throw ValidationException::withMessages([
-                'email' => 'Ya existe un usuario con ese email.',
+                'data.email' => 'Ya existe un usuario con ese email.',
             ]);
         }
 

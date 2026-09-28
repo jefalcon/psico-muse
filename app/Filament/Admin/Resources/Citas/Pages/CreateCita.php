@@ -24,14 +24,14 @@ class CreateCita extends CreateRecord
 
         if (! Horario::enHorario($inicio, $fin)) {
             throw ValidationException::withMessages([
-                'inicio' => 'La cita queda fuera del horario laboral.',
+                'data.inicio' => 'La cita queda fuera del horario laboral.',
             ]);
         }
 
         if (($data['estado'] ?? Cita::ESTADO_CONFIRMADA) !== Cita::ESTADO_SOLICITADA
             && Cita::solapaConConfirmada($inicio, $fin)) {
             throw ValidationException::withMessages([
-                'inicio' => 'Ese horario se solapa con otra cita confirmada.',
+                'data.inicio' => 'Ese horario se solapa con otra cita confirmada.',
             ]);
         }
 

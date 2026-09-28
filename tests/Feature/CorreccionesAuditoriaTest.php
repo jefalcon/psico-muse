@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Filament\Admin\Resources\Articulos\Pages\CreateArticulo;
 use App\Filament\Admin\Resources\Citas\Pages\CreateCita;
 use App\Filament\Admin\Resources\Citas\Pages\EditCita;
+use App\Filament\Admin\Resources\Clientes\Pages\CreateCliente;
+use App\Filament\Admin\Resources\Clientes\Pages\EditCliente;
 use App\Filament\Admin\Resources\Hilos\Pages\CreateHilo;
 use App\Filament\Admin\Resources\Hilos\Pages\ListHilos;
 use App\Filament\Admin\Resources\Historial\Pages\CreateEntradaHistorial;
@@ -317,5 +319,90 @@ class CorreccionesAuditoriaTest extends TestCase
         ]);
         $this->assertNull($borrador->fresh()->publicado_en);
         $this->get('/blog/'.$borrador->slug)->assertNotFound();
+    }
+
+    // Defecto 5: al crear o reprogramar una cita solapada con una confirmada
+    // no se crea, pero el error debe verse en el formulario (clave data.inicio).
+    public function test_solape_muestra_error_en_el_formulario_de_citas(): void
+    {
+        $this->comoAdmin();
+        [, $marcos] = $this->clientesDemo();
+        $servicio = Servicio::activos()->firstOrFail();
+        $inicio = $this->diaLaborable(today()->addDays(20), '10:00');
+
+        Cita::create([
+            'cliente_id' => $marcos->id,
+            'servicio_id' => $servicio->id,
+            'inicio' => $inicio,
+            'fin' => $inicio->copy()->addMinutes($servicio->duracion_minutos),
+            'estado' => Cita::ESTADO_CONFIRMADA,
+        ]);
+        $solapado = $inicio->copy()->addMinutes(15)->format('Y-m-d H:i');
+        $nCitas = Cita::count();
+
+        // Alta con solape: no se crea y el error aparece en el campo inicio.
+        Livewire::test(CreateCita::class)
+            ->fillForm([
+                'cliente_id' => $marcos->id,
+                'servicio_id' => $servicio->id,
+                'inicio' => $solapado,
+                'estado' => Cita::ESTADO_CONFIRMADA,
+            ])
+            ->call('create')
+            ->assertHasFormErrors(['inicio']);
+        $this->assertSame($nCitas, Cita::count(), 'La cita solapada no debe crearse.');
+
+        // Reprogramación (edición) con solape: no se mueve y avisa en inicio.
+        $otroDia = $this->diaLaborable(today()->addDays(21), '11:00');
+        $otra = Cita::create([
+            'cliente_id' => $marcos->id,
+            'servicio_id' => $servicio->id,
+            'inicio' => $otroDia,
+            'fin' => $otroDia->copy()->addMinutes($servicio->duracion_minutos),
+            'estado' => Cita::ESTADO_CONFIRMADA,
+        ]);
+
+        Livewire::test(EditCita::class, ['record' => $otra->id])
+            ->fillForm([
+                'cliente_id' => $marcos->id,
+                'servicio_id' => $servicio->id,
+                'inicio' => $solapado,
+                'estado' => Cita::ESTADO_CONFIRMADA,
+            ])
+            ->call('save')
+            ->assertHasFormErrors(['inicio']);
+        $this->assertTrue($otra->fresh()->inicio->equalTo($otroDia), 'La cita solapada no debe moverse.');
+
+        // Rechazo sin motivo desde edición: el error aparece en su campo.
+        Livewire::test(EditCita::class, ['record' => $otra->id])
+            ->fillForm([
+                'cliente_id' => $marcos->id,
+                'servicio_id' => $servicio->id,
+                'inicio' => $otroDia->format('Y-m-d H:i'),
+                'estado' => Cita::ESTADO_RECHAZADA,
+                'motivo_rechazo' => '',
+            ])
+            ->call('save')
+            ->assertHasFormErrors(['motivo_rechazo']);
+    }
+
+    // Defecto 5 (otras validaciones): el email duplicado de cliente también
+    // debe verse en el formulario (clave data.email).
+    public function test_email_duplicado_muestra_error_en_el_formulario_de_clientes(): void
+    {
+        $this->comoAdmin();
+        [$lucia] = $this->clientesDemo();
+
+        Livewire::test(CreateCliente::class)
+            ->fillForm(['nombre' => 'Duplicado', 'email' => 'cliente1@demo.test'])
+            ->call('create')
+            ->assertHasFormErrors(['email']);
+        $this->assertSame(2, Cliente::count(), 'No debe crear el cliente duplicado.');
+
+        Livewire::test(EditCliente::class, ['record' => $lucia->id])
+            ->fillForm(['nombre' => 'Lucía Fernández', 'email' => 'cliente2@demo.test'])
+            ->call('save')
+            ->assertHasFormErrors(['email']);
+        $this->assertSame('cliente1@demo.test', $lucia->fresh()->user->email);
     }
 }

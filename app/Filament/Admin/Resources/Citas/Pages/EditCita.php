@@ -35,20 +35,20 @@ class EditCita extends EditRecord
 
         if (! Horario::enHorario($inicio, $fin)) {
             throw ValidationException::withMessages([
-                'inicio' => 'La cita queda fuera del horario laboral.',
+                'data.inicio' => 'La cita queda fuera del horario laboral.',
             ]);
         }
 
         if (($data['estado'] ?? $record->estado) !== Cita::ESTADO_SOLICITADA
             && Cita::solapaConConfirmada($inicio, $fin, $record->id)) {
             throw ValidationException::withMessages([
-                'inicio' => 'Ese horario se solapa con otra cita confirmada.',
+                'data.inicio' => 'Ese horario se solapa con otra cita confirmada.',
             ]);
         }
 
         if (($data['estado'] ?? '') === Cita::ESTADO_RECHAZADA && trim((string) ($data['motivo_rechazo'] ?? '')) === '') {
             throw ValidationException::withMessages([
-                'motivo_rechazo' => 'El rechazo exige indicar un motivo.',
+                'data.motivo_rechazo' => 'El rechazo exige indicar un motivo.',
             ]);
         }
 
