@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="Ilustración decorativa">
+  <rect width="800" height="600" fill="#edf3ea"/>
+  <ellipse cx="400" cy="520" rx="330" ry="60" fill="#bccfae" opacity="0.6"/>
+<path d="M400,520 C380,350 300,250 180,210 C300,200 390,300 400,520 Z" fill="#5b8c5a"/>
+<path d="M400,520 C420,350 500,250 620,210 C500,200 410,300 400,520 Z" fill="#5b8c5a" opacity="0.75"/>
+<path d="M400,520 C395,400 370,320 320,270 C370,265 398,350 400,520 Z" fill="#3d6b8e" opacity="0.85"/>
+<circle cx="400" cy="150" r="40" fill="#3d6b8e" opacity="0.8"/>
+</svg>

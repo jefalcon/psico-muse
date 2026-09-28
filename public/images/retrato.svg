@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 700" width="600" height="700" role="img" aria-label="Retrato ilustrado de la psicóloga">
+  <rect width="600" height="700" fill="#e8f1ec"/>
+  <rect x="70" y="60" width="460" height="580" rx="230" fill="#dce9e2"/>
+  <rect x="70" y="60" width="460" height="580" rx="230" fill="none" stroke="#2f7d6d" stroke-width="6"/>
+  <!-- cuello y hombros -->
+  <path d="M255,470 L255,420 Q300,400 345,420 L345,470 Z" fill="#d9a184"/>
+  <path d="M150,640 C160,540 220,480 300,480 C380,480 440,540 450,640 Z" fill="#2f7d6d"/>
+  <path d="M150,640 C160,540 220,480 300,480 L300,640 Z" fill="#35907e"/>
+  <!-- collar -->
+  <path d="M270,492 L300,530 L330,492 L325,480 L275,480 Z" fill="#f3ece1"/>
+  <!-- pelo -->
+  <path d="M190,330 C185,210 230,140 300,140 C370,140 415,210 410,330 C408,380 400,430 390,450 L375,440 C390,380 388,300 375,250 C360,290 340,300 300,300 C260,300 240,290 225,250 C212,300 210,380 225,440 L210,450 C200,430 192,380 190,330 Z" fill="#5b3b2a"/>
+  <!-- cara -->
+  <ellipse cx="300" cy="330" rx="78" ry="95" fill="#e8b48f"/>
+  <!-- orejas -->
+  <ellipse cx="222" cy="340" rx="12" ry="20" fill="#e8b48f"/>
+  <ellipse cx="378" cy="340" rx="12" ry="20" fill="#e8b48f"/>
+  <!-- ojos -->
+  <ellipse cx="270" cy="330" rx="11" ry="7" fill="#2d2a26"/>
+  <ellipse cx="330" cy="330" rx="11" ry="7" fill="#2d2a26"/>
+  <circle cx="273" cy="328" r="2.5" fill="#ffffff"/>
+  <circle cx="333" cy="328" r="2.5" fill="#ffffff"/>
+  <!-- cejas -->
+  <path d="M256,312 Q270,305 284,311" stroke="#5b3b2a" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M316,311 Q330,305 344,312" stroke="#5b3b2a" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- nariz y boca -->
+  <path d="M300,335 L296,360 Q300,365 308,362" stroke="#c68e67" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M278,382 Q300,396 322,382" stroke="#a8563c" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <!-- pendientes -->
+  <circle cx="222" cy="368" r="7" fill="#e0a458"/>
+  <circle cx="378" cy="368" r="7" fill="#e0a458"/>
+  <!-- hojas decorativas -->
+  <path d="M120,600 C130,560 160,540 190,535 C175,560 150,580 120,600 Z" fill="#7fb069"/>
+  <path d="M480,600 C470,560 440,540 410,535 C425,560 450,580 480,600 Z" fill="#7fb069"/>
+</svg>

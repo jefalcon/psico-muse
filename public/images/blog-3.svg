@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="Ilustración decorativa">
+  <rect width="800" height="600" fill="#e9eef4"/>
+  <rect x="120" y="80" width="240" height="440" rx="120" fill="#3d6b8e" opacity="0.85"/>
+<rect x="400" y="140" width="240" height="380" rx="120" fill="#a9c3d6" opacity="0.8"/>
+<circle cx="240" cy="330" r="55" fill="#7fb069"/>
+<circle cx="660" cy="200" r="28" fill="#7fb069" opacity="0.7"/>
+</svg>
