@@ -15,6 +15,7 @@ use App\Filament\Admin\Resources\Posts\Pages\CreatePost;
 use App\Models\Articulo;
 use App\Models\Cita;
 use App\Models\Post;
+use App\Services\GestorCitas;
 use App\Models\Cliente;
 use App\Models\EntradaHistorial;
 use App\Models\Hilo;
@@ -404,5 +405,24 @@ class CorreccionesAuditoriaTest extends TestCase
             ->call('save')
             ->assertHasFormErrors(['email']);
         $this->assertSame('cliente1@demo.test', $lucia->fresh()->user->email);
+    }
+
+    // Defecto 6: la notificación del portal al rechazar una cita debe
+    // incluir el motivo.
+    public function test_aviso_de_rechazo_incluye_el_motivo(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+        $cita = Cita::where('estado', Cita::ESTADO_SOLICITADA)->firstOrFail();
+        $usuario = $cita->cliente->user;
+
+        GestorCitas::rechazar($cita, 'La consulta cierra por festivo local');
+
+        $aviso = $usuario->notifications()->latest()->firstOrFail();
+        $this->assertSame('Tu cita ha sido rechazada', $aviso->data['title']);
+        $this->assertStringContainsString(
+            'La consulta cierra por festivo local',
+            (string) ($aviso->data['body'] ?? ''),
+            'El aviso del portal debe incluir el motivo del rechazo.'
+        );
     }
 }

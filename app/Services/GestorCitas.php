@@ -108,9 +108,15 @@ class GestorCitas
 
         $usuario->notify(new CitaActualizada($cita->load('servicio'), $accion, $url));
 
+        $cuerpo = $cita->servicio->nombre.' · '.$cita->inicio->format('d/m/Y H:i');
+
+        if ($accion === 'rechazada' && filled($cita->motivo_rechazo)) {
+            $cuerpo .= ' · Motivo: '.$cita->motivo_rechazo;
+        }
+
         AvisoFilament::make()
             ->title('Tu cita ha sido '.$accion)
-            ->body($cita->servicio->nombre.' · '.$cita->inicio->format('d/m/Y H:i'))
+            ->body($cuerpo)
             ->sendToDatabase($usuario);
     }
 }
