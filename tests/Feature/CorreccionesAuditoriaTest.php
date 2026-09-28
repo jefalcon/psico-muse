@@ -2,13 +2,17 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Admin\Resources\Articulos\Pages\CreateArticulo;
 use App\Filament\Admin\Resources\Citas\Pages\CreateCita;
 use App\Filament\Admin\Resources\Citas\Pages\EditCita;
 use App\Filament\Admin\Resources\Hilos\Pages\CreateHilo;
 use App\Filament\Admin\Resources\Hilos\Pages\ListHilos;
 use App\Filament\Admin\Resources\Historial\Pages\CreateEntradaHistorial;
 use App\Filament\Admin\Resources\Historial\Pages\ListEntradasHistorial;
+use App\Filament\Admin\Resources\Posts\Pages\CreatePost;
+use App\Models\Articulo;
 use App\Models\Cita;
+use App\Models\Post;
 use App\Models\Cliente;
 use App\Models\EntradaHistorial;
 use App\Models\Hilo;
@@ -264,5 +268,54 @@ class CorreccionesAuditoriaTest extends TestCase
         $cuerpo = implode("\n", [...$correo->introLines, ...$correo->outroLines]);
         $this->assertStringNotContainsString('You are receiving this email', $cuerpo);
         $this->assertStringContainsStringIgnoringCase('contraseña', $cuerpo);
+    }
+
+    // Defecto 4: un post o artículo publicado sin fecha no aparecía en la
+    // web. Al publicar sin fecha debe tomar la fecha actual.
+    public function test_publicar_sin_fecha_toma_fecha_actual_y_se_muestra(): void
+    {
+        $this->comoAdmin();
+
+        Livewire::test(CreatePost::class)
+            ->fillForm([
+                'titulo' => 'Post de auditoría sin fecha',
+                'slug' => 'post-auditoria-sin-fecha',
+                'cuerpo' => '<p>Contenido de prueba.</p>',
+                'estado' => Post::ESTADO_PUBLICADO,
+            ])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $post = Post::where('slug', 'post-auditoria-sin-fecha')->firstOrFail();
+        $this->assertNotNull($post->publicado_en, 'Publicar sin fecha debe fijar la fecha actual.');
+        $this->assertEqualsWithDelta(now()->timestamp, $post->publicado_en->timestamp, 300);
+        $this->get('/blog/'.$post->slug)->assertOk();
+        $this->get('/blog')->assertSee('Post de auditoría sin fecha');
+
+        Livewire::test(CreateArticulo::class)
+            ->fillForm([
+                'titulo' => 'Artículo de auditoría sin fecha',
+                'slug' => 'articulo-auditoria-sin-fecha',
+                'categoria' => Articulo::CATEGORIA_TRASTORNO,
+                'cuerpo' => '<p>Contenido de prueba.</p>',
+                'estado' => Articulo::ESTADO_PUBLICADO,
+            ])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $articulo = Articulo::where('slug', 'articulo-auditoria-sin-fecha')->firstOrFail();
+        $this->assertNotNull($articulo->publicado_en, 'Publicar sin fecha debe fijar la fecha actual.');
+        $this->get('/articulos/'.$articulo->slug)->assertOk();
+
+        // Un borrador sin fecha sigue sin fecha y sin publicarse.
+        $borrador = Post::create([
+            'titulo' => 'Borrador sin fecha',
+            'slug' => 'borrador-sin-fecha-auditoria',
+            'cuerpo' => '<p>En construcción.</p>',
+            'estado' => Post::ESTADO_BORRADOR,
+            'publicado_en' => null,
+        ]);
+        $this->assertNull($borrador->fresh()->publicado_en);
+        $this->get('/blog/'.$borrador->slug)->assertNotFound();
     }
 }

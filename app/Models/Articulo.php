@@ -33,6 +33,17 @@ class Articulo extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        // Publicar sin fecha toma la fecha actual; sin fecha el contenido
+        // publicado no aparecería en la web.
+        static::saving(function (Articulo $articulo): void {
+            if ($articulo->estado === self::ESTADO_PUBLICADO && empty($articulo->publicado_en)) {
+                $articulo->publicado_en = now();
+            }
+        });
+    }
+
     public function getRouteKeyName(): string
     {
         return 'slug';

@@ -28,6 +28,17 @@ class Post extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        // Publicar sin fecha toma la fecha actual; sin fecha el contenido
+        // publicado no aparecería en la web.
+        static::saving(function (Post $post): void {
+            if ($post->estado === self::ESTADO_PUBLICADO && empty($post->publicado_en)) {
+                $post->publicado_en = now();
+            }
+        });
+    }
+
     public function getRouteKeyName(): string
     {
         return 'slug';
