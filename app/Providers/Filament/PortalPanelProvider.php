@@ -26,6 +26,7 @@ class PortalPanelProvider extends PanelProvider
             ->brandName('Consulta Demo · Espacio del paciente')
             ->login()
             ->passwordReset()
+            ->defaultAvatarProvider(\App\Filament\AvatarProviders\InicialesAvatarProvider::class)
             ->databaseNotifications()
             ->colors([
                 'primary' => Color::Emerald,

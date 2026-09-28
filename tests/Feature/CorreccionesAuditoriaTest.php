@@ -197,4 +197,36 @@ class CorreccionesAuditoriaTest extends TestCase
             ->assertCanSeeTableRecords($marcos->entradasHistorial)
             ->assertCanNotSeeTableRecords($lucia->entradasHistorial);
     }
+
+    // Defecto 2: Filament cargaba el avatar desde ui-avatars.com en /admin y
+    // /portal. El proveedor debe ser local, sin peticiones externas.
+    public function test_paneles_usan_avatar_local_sin_peticiones_externas(): void
+    {
+        $this->comoAdmin();
+
+        foreach (['admin', 'portal'] as $panel) {
+            $proveedor = Filament::getPanel($panel)->getDefaultAvatarProvider();
+            $this->assertNotSame(
+                \Filament\AvatarProviders\UiAvatarsProvider::class,
+                $proveedor,
+                "El panel {$panel} sigue usando ui-avatars.com."
+            );
+
+            $url = app($proveedor)->get(User::firstOrFail());
+            $this->assertStringNotContainsString('https://', $url, "El avatar del panel {$panel} apunta a una URL externa.");
+            $this->assertStringNotContainsString('http://', $url, "El avatar del panel {$panel} apunta a una URL externa.");
+            $this->assertStringStartsWith('data:image/svg+xml,', $url);
+        }
+
+        $this->get('/admin')->assertOk()->assertDontSee('ui-avatars.com', false);
+    }
+
+    // Defecto 2 (portal): la página del paciente tampoco debe pedir avatares fuera.
+    public function test_portal_no_carga_avatar_externo(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+        $this->actingAs(User::where('email', 'cliente1@demo.test')->firstOrFail());
+
+        $this->get('/portal/inicio')->assertOk()->assertDontSee('ui-avatars.com', false);
+    }
 }

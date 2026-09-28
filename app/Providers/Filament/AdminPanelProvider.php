@@ -29,6 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('Consulta Demo · Gestión')
             ->login()
             ->passwordReset()
+            ->defaultAvatarProvider(\App\Filament\AvatarProviders\InicialesAvatarProvider::class)
             ->databaseNotifications()
             ->colors([
                 'primary' => Color::Teal,
