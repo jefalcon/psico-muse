@@ -86,7 +86,7 @@ class Mensajes extends Page
         $this->validate(['cuerpo' => ['required', 'string', 'max:10000']], [], ['cuerpo' => 'mensaje']);
 
         $hilo = $this->hiloActual();
-        abort_unless($hilo, 404);
+        abort_if($hilo === null, 404);
 
         GestorMensajes::responder($hilo, auth()->user(), $this->cuerpo);
         $hilo->touch();

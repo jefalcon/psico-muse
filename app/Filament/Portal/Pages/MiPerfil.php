@@ -31,7 +31,7 @@ class MiPerfil extends Page
 
     public function mount(): void
     {
-        $this->telefono = (string) (auth()->user()->cliente?->telefono ?? '');
+        $this->telefono = (string) (auth()->user()->cliente->telefono ?? '');
     }
 
     public function guardarTelefono(): void
