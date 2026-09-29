@@ -3,14 +3,16 @@
 namespace App\Filament\Admin\Resources\Clientes\Pages;
 
 use App\Filament\Admin\Resources\Clientes\ClienteResource;
+use App\Filament\Concerns\LanzaErroresDeFormulario;
 use App\Models\Cliente;
 use App\Models\User;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Validation\ValidationException;
 
 class EditCliente extends EditRecord
 {
+    use LanzaErroresDeFormulario;
+
     protected static string $resource = ClienteResource::class;
 
     /** @param array<string, mixed> $data */
@@ -33,9 +35,7 @@ class EditCliente extends EditRecord
         $user = $record->user;
 
         if ($user && User::where('email', $data['email'])->where('id', '!=', $user->id)->exists()) {
-            throw ValidationException::withMessages([
-                'data.email' => 'Ya existe otro usuario con ese email.',
-            ]);
+            self::errorDeFormulario('email', 'Ya existe otro usuario con ese email.');
         }
 
         $user?->update([
