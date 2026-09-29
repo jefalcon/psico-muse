@@ -47,8 +47,14 @@ modo dev): la cola es `sync` y los assets se sirven compilados.
 ## Tests
 
 ```bash
-php artisan test
+php artisan test              # 54 tests, 366 aserciones
+vendor/bin/phpstan analyse    # Larastan nivel 5, sin errores
 ```
+
+Calidad verificada: 54 tests en verde, Larastan nivel 5 sin errores y
+verificación externa de auditoría con Playwright 91/91 sin peticiones a
+dominios externos (scripts propios de la auditoría, no incluidos en el
+repo al depender de su fecha y rutas de ejecución).
 
 ## Decisiones de diseño
 
