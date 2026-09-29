@@ -30,12 +30,12 @@ class Cliente extends Model
 
     public function nombre(): string
     {
-        return $this->user?->name ?? '—';
+        return $this->user->name ?? '—';
     }
 
     public function email(): string
     {
-        return $this->user?->email ?? '—';
+        return $this->user->email ?? '—';
     }
 
     /** Etiqueta "Nombre (email)" para los selectores de cliente. */

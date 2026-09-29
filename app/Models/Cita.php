@@ -7,6 +7,16 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $cliente_id
+ * @property int $servicio_id
+ * @property Carbon $inicio
+ * @property Carbon $fin
+ * @property string $estado
+ * @property string|null $comentario_cliente
+ * @property string|null $motivo_rechazo
+ */
 class Cita extends Model
 {
     public const ESTADO_SOLICITADA = 'solicitada';

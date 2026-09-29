@@ -15,7 +15,7 @@ class Ajuste extends Model
     {
         $ajuste = self::where('clave', $clave)->first();
 
-        return $ajuste?->valor ?? $defecto;
+        return $ajuste->valor ?? $defecto;
     }
 
     public static function guardar(string $clave, ?string $valor): void

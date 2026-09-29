@@ -10,6 +10,7 @@ use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 
+/** @property Schema $form Esquema resuelto por Filament vía __get. */
 class HorarioLaboral extends Page
 {
     protected string $view = 'filament.admin.pages.horario-laboral';

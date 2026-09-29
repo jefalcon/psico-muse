@@ -13,7 +13,7 @@ class AdjuntoController extends Controller
         $usuario = auth()->user();
         $entrada = $adjunto->entrada;
 
-        abort_unless($usuario, 403);
+        abort_if($usuario === null, 403);
 
         if ($usuario->isCliente()) {
             $esPropio = $usuario->cliente && $entrada->cliente_id === $usuario->cliente->id;
