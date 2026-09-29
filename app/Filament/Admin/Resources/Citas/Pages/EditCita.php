@@ -29,6 +29,8 @@ class EditCita extends EditRecord
     /** @param array<string, mixed> $data */
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
+        assert($record instanceof Cita);
+
         $servicio = Servicio::findOrFail($data['servicio_id']);
         $inicio = Carbon::parse($data['inicio']);
         $fin = $inicio->copy()->addMinutes($servicio->duracion_minutos);

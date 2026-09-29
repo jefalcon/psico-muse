@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Hilos\Pages;
 
 use App\Filament\Admin\Resources\Hilos\HiloResource;
+use App\Models\Hilo;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewHilo extends ViewRecord
@@ -12,7 +13,10 @@ class ViewHilo extends ViewRecord
     public function mount(int|string $record): void
     {
         parent::mount($record);
-        $this->record->marcarLeidoPara(auth()->user());
+
+        $hilo = $this->record;
+        assert($hilo instanceof Hilo);
+        $hilo->marcarLeidoPara(auth()->user());
     }
 
     protected function getHeaderActions(): array

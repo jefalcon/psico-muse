@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Clientes\Pages;
 
 use App\Filament\Admin\Resources\Clientes\ClienteResource;
+use App\Models\Cliente;
 use App\Models\User;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -15,8 +16,11 @@ class EditCliente extends EditRecord
     /** @param array<string, mixed> $data */
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        $data['nombre'] = $this->record->user?->name;
-        $data['email'] = $this->record->user?->email;
+        $cliente = $this->record;
+        assert($cliente instanceof Cliente);
+
+        $data['nombre'] = $cliente->user?->name;
+        $data['email'] = $cliente->user?->email;
 
         return $data;
     }
@@ -24,6 +28,8 @@ class EditCliente extends EditRecord
     /** @param array<string, mixed> $data */
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
+        assert($record instanceof Cliente);
+
         $user = $record->user;
 
         if ($user && User::where('email', $data['email'])->where('id', '!=', $user->id)->exists()) {

@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Historial\Pages;
 
 use App\Filament\Admin\Resources\Historial\EntradaHistorialResource;
+use App\Models\EntradaHistorial;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
@@ -19,7 +20,9 @@ class EditEntradaHistorial extends EditRecord
 
     protected function afterSave(): void
     {
-        EntradaHistorialResource::completarMetadatosAdjuntos($this->record);
+        $entrada = $this->record;
+        assert($entrada instanceof EntradaHistorial);
+        EntradaHistorialResource::completarMetadatosAdjuntos($entrada);
     }
 
     protected function getRedirectUrl(): string
